@@ -4,712 +4,701 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#101116">
-<title>DERIILNAY BOXING CHAMPIONSHIP</title>
+<title>FIGHT FOR RANA | Romantic Battle</title>
 <style>
-:root {
-  --bg:#101116;
-  --panel:#1b1d26;
-  --red:#ff3448;
-  --blue:#32c8ff;
-  --gold:#ffca58;
-  --text:#f7f7fb;
+:root{
+ --pink:#ff78c8;--cyan:#70f5ff;--purple:#a16bff;
+ --dark:#080817;--white:#fff;
 }
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  background:radial-gradient(ellipse at top,#30313b,#101116 65%);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  min-height:100vh;
-  -webkit-tap-highlight-color:transparent;
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--dark);color:white;
+ font-family:Arial,Helvetica,sans-serif;
+ overflow:hidden;touch-action:manipulation;
 }
-button,input { font:inherit; }
-button { cursor:pointer; touch-action:manipulation; }
-.app {
-  width:min(100%,850px);
-  margin:auto;
-  padding:14px;
+button,input{font:inherit}
+button{cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent}
+#game{
+ position:relative;width:100%;height:100dvh;min-height:480px;
+ max-width:1000px;margin:auto;overflow:hidden;background:#100c29;
 }
-header { text-align:center;padding:12px 0 18px; }
-.logo {
-  color:var(--gold);
-  font-size:clamp(24px,6vw,39px);
-  font-weight:1000;
-  font-style:italic;
-  letter-spacing:2px;
-  text-shadow:0 3px 20px #ffca5840;
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hud{
+ position:absolute;top:10px;left:10px;right:10px;z-index:5;
+ display:grid;grid-template-columns:1fr auto 1fr;gap:7px;
+ align-items:start;pointer-events:none;
 }
-.subtitle {
-  color:#a9abb9;
-  font-size:11px;
-  letter-spacing:3px;
-  margin-top:7px;
+.panel{
+ min-width:0;background:#100d27df;border:1px solid #ffffff35;
+ border-radius:10px;padding:8px;
 }
-.panel {
-  background:#1a1b23;
-  border:1px solid #ffffff15;
-  border-radius:16px;
-  padding:14px;
-  margin-bottom:13px;
-  box-shadow:0 10px 30px #0003;
+.name{
+ font-size:11px;font-weight:900;letter-spacing:.5px;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;
 }
-.names {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+.bar{height:11px;background:#392340;border-radius:10px;overflow:hidden}
+.fill{height:100%;width:100%;transition:width .15s;background:linear-gradient(90deg,#ff397b,#ff9ecb)}
+.energy{height:5px;margin-top:5px;background:#30234b;border-radius:8px;overflow:hidden}
+.energy .fill{background:linear-gradient(90deg,#48efff,#bd7dff)}
+#enemyHP{background:linear-gradient(90deg,#ffb13b,#ff3d65)}
+.centerHud{text-align:center;font-size:11px;font-weight:900;padding-top:4px;text-shadow:0 2px 5px black}
+#stageText{font-size:10px;color:#ffe4a0;margin-top:5px;white-space:nowrap}
+#pauseBtn{
+ position:absolute;right:10px;top:83px;z-index:9;
+ width:37px;height:37px;border-radius:10px;
+ border:1px solid #ffffff55;background:#17142c;color:white;font-weight:bold;
 }
-.field label {
-  display:block;
-  color:#b7b8c4;
-  font-size:11px;
-  margin-bottom:7px;
+#message{
+ position:absolute;top:27%;left:0;right:0;z-index:6;
+ text-align:center;font-size:clamp(28px,8vw,52px);font-weight:1000;
+ font-style:italic;color:white;text-shadow:0 0 16px #ff52d3,3px 4px #39105c;
+ pointer-events:none;
 }
-input {
-  width:100%;
-  min-width:0;
-  border:1px solid #41434e;
-  background:#111218;
-  color:white;
-  border-radius:9px;
-  padding:11px 8px;
-  outline:none;
+#subtitle{
+ position:absolute;top:39%;left:0;right:0;z-index:6;
+ text-align:center;color:#bdfaff;font-weight:bold;font-size:13px;
+ padding:0 16px;text-shadow:0 2px 5px black;pointer-events:none;
 }
-input:focus { border-color:var(--gold); }
-.hud {
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:10px;
-  margin-bottom:14px;
+#toast{
+ position:absolute;top:48%;left:0;right:0;z-index:7;
+ text-align:center;color:#fff4a8;font-weight:bold;
+ text-shadow:0 0 12px #ff53c7;pointer-events:none;
 }
-.fighter-info { min-width:0; }
-.fighter-name {
-  font-size:12px;
-  font-weight:bold;
-  margin-bottom:7px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+.controls{
+ position:absolute;left:10px;right:10px;bottom:12px;z-index:8;
+ display:flex;align-items:end;justify-content:space-between;gap:7px;
+ pointer-events:none;
 }
-.hp-track {
-  height:15px;
-  background:#3b2028;
-  border-radius:5px;
-  overflow:hidden;
-  border:1px solid #ffffff20;
+.pad,.actions{display:grid;gap:6px;pointer-events:auto}
+.pad{grid-template-columns:repeat(3,clamp(38px,11vw,53px));grid-template-rows:repeat(2,43px)}
+.actions{grid-template-columns:repeat(3,clamp(42px,14vw,60px));grid-template-rows:repeat(2,43px)}
+.ctrl{
+ background:#17142ceF;color:white;border:1px solid #ffffff55;
+ border-radius:11px;font-size:11px;font-weight:900;
+ box-shadow:0 3px 0 #05050e;user-select:none;
 }
-.hp-fill {
-  height:100%;
-  width:100%;
-  transition:width .22s;
+.ctrl:active,.ctrl.active{background:var(--pink);color:#2c0730;transform:translateY(2px)}
+.ctrl.special{background:#12394beF;border-color:var(--cyan)}
+.blank{visibility:hidden}
+.overlay{
+ position:absolute;inset:0;z-index:20;
+ display:flex;align-items:center;justify-content:center;
+ padding:18px;overflow:auto;text-align:center;
+ background:radial-gradient(ellipse at center,#271044f5,#050510fa);
 }
-.player-hp { background:linear-gradient(90deg,#b81732,#ff596a); }
-.cpu-hp { background:linear-gradient(90deg,#1685bf,#43d6ff); }
-.hp-number { color:#b7b8c4;font-size:11px;margin-top:5px; }
-.vs { color:var(--gold);font-weight:1000;font-size:18px; }
-.arena {
-  position:relative;
-  overflow:hidden;
-  border:2px solid #464652;
-  border-radius:14px;
-  background:linear-gradient(#202a42 0%,#38435c 54%,#b76c46 55%,#e0a26b 100%);
-  height:clamp(245px,60vw,370px);
-  touch-action:manipulation;
+.overlay.hidden{display:none!important}
+.card{
+ width:min(440px,100%);padding:24px 20px;
+ border:1px solid #ff8bd66e;border-radius:22px;
+ background:linear-gradient(145deg,#211339f8,#0b1025f8);
+ box-shadow:0 0 38px #ff3ab733;
 }
-.arena::before {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(90deg,transparent 0 48px,#ffffff08 49px 50px);
-  pointer-events:none;
+.logo{
+ font-size:clamp(39px,11vw,60px);font-weight:1000;
+ line-height:.93;letter-spacing:-2px;color:white;
+ text-shadow:0 0 12px #ff55ca,0 0 30px #a52cff;
 }
-.rope {
-  position:absolute;
-  left:0;right:0;
-  height:3px;
-  background:#f2e8dc;
-  box-shadow:0 2px 4px #0004;
+.logo span{color:var(--cyan)}
+.tagline{color:#dfc8f5;line-height:1.6;margin:16px 0}
+.field-label{display:block;text-align:left;color:#ffd4ee;font-weight:bold;font-size:13px;margin:14px 0 7px}
+#heroName{
+ display:block;width:100%;padding:14px;
+ border:2px solid var(--pink);border-radius:12px;
+ background:#100c26;color:white;font-size:16px;text-align:center;
+ outline:none;margin-bottom:12px;
 }
-.rope.r1 { top:25%; }
-.rope.r2 { top:43%; }
-.rope.r3 { top:61%; }
-.spotlight {
-  position:absolute;
-  width:65%;
-  height:100%;
-  top:0;
-  left:17.5%;
-  background:linear-gradient(90deg,transparent,#ffffff0b,transparent);
+#heroName:focus{box-shadow:0 0 15px #ff78c866}
+.primary{
+ display:block;width:100%;padding:15px 10px;border:0;border-radius:13px;
+ background:linear-gradient(90deg,#ff66c4,#ffb0d8);
+ color:#280a2e;font-weight:1000;font-size:16px;
+ box-shadow:0 4px 0 #a73780,0 0 20px #ff60c566;margin-top:9px;
 }
-.ring-label {
-  position:absolute;
-  top:8px;
-  width:100%;
-  text-align:center;
-  color:#ffffffa0;
-  font-weight:bold;
-  font-size:10px;
-  letter-spacing:3px;
+.secondary{
+ width:100%;padding:12px;border:1px solid #8d72b6;border-radius:12px;
+ background:#201a39;color:white;font-weight:bold;margin-top:10px;
 }
-.timer {
-  position:absolute;
-  z-index:3;
-  top:13%;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:clamp(25px,7vw,38px);
-  font-weight:1000;
-  text-shadow:0 3px 8px #000;
-}
-.fighter {
-  position:absolute;
-  bottom:10%;
-  width:35%;
-  height:64%;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  transition:transform .12s;
-}
-.fighter.left { left:2%; }
-.fighter.right { right:2%; }
-.fighter svg { width:100%;height:100%;overflow:visible; }
-.fighter.hit { animation:hit .22s ease; }
-.fighter.attack-left { animation:attackL .25s ease; }
-.fighter.attack-right { animation:attackR .25s ease; }
-.fighter.dodge { animation:dodge .35s ease; }
-@keyframes hit {
-  0%,100%{filter:none}
-  40%{filter:brightness(2) sepia(1) saturate(5)}
-}
-@keyframes attackL {
-  50%{transform:translateX(28px) rotate(-4deg)}
-}
-@keyframes attackR {
-  50%{transform:translateX(-28px) rotate(4deg)}
-}
-@keyframes dodge {
-  50%{transform:translateY(-15px) scale(.92)}
-}
-#flash {
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  opacity:0;
-  background:#ffffff70;
-  z-index:4;
-}
-#flash.show { animation:flash .18s ease; }
-@keyframes flash {
-  0%{opacity:.7}
-  100%{opacity:0}
-}
-#impact {
-  position:absolute;
-  z-index:5;
-  left:50%;top:46%;
-  transform:translate(-50%,-50%) scale(.3);
-  font-size:clamp(28px,8vw,50px);
-  font-weight:1000;
-  color:var(--gold);
-  text-shadow:0 4px 0 #7d281d,0 0 20px #fff;
-  opacity:0;
-  pointer-events:none;
-}
-#impact.show { animation:impact .48s ease-out; }
-@keyframes impact {
-  15%{opacity:1;transform:translate(-50%,-50%) scale(1.2) rotate(-8deg)}
-  100%{opacity:0;transform:translate(-50%,-85%) scale(.8)}
-}
-#message {
-  position:absolute;
-  z-index:6;
-  bottom:8px;
-  left:8px;
-  right:8px;
-  text-align:center;
-  color:white;
-  font-size:12px;
-  font-weight:bold;
-  text-shadow:0 2px 4px #000;
-}
-.arena.shake { animation:shake .18s linear; }
-@keyframes shake {
-  0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-5px)}
-  75%{transform:translateX(5px)}
-}
-.controls {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px;
-  margin-top:14px;
-}
-.action {
-  min-height:68px;
-  border-radius:12px;
-  border:1px solid #ffffff20;
-  color:white;
-  font-weight:bold;
-  background:linear-gradient(#343642,#23242e);
-  box-shadow:0 4px 0 #0a0a0d;
-  padding:9px 3px;
-}
-.action:active { transform:translateY(3px);box-shadow:0 1px 0 #0a0a0d; }
-.action .emoji { display:block;font-size:23px;margin-bottom:5px; }
-.action small { display:block;color:#b6b7c4;font-size:10px;margin-top:4px; }
-.action.red { border-color:#ff344855; }
-.action.gold { border-color:#ffca5855; }
-.action.blue { border-color:#32c8ff55; }
-.action:disabled { opacity:.38; }
-.game-buttons {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:13px;
-}
-.primary,.secondary {
-  padding:14px;
-  border-radius:10px;
-  border:0;
-  font-weight:900;
-}
-.primary { background:var(--gold);color:#19130a; }
-.secondary { background:#30313c;color:white;border:1px solid #ffffff20; }
-.status {
-  text-align:center;
-  min-height:25px;
-  color:var(--gold);
-  font-size:13px;
-  font-weight:bold;
-  margin-top:13px;
-}
-.stats {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  text-align:center;
-  gap:8px;
-}
-.stat strong { display:block;font-size:22px; }
-.stat span { font-size:10px;color:#a8a9b6; }
-.instructions { color:#c4c5cf;font-size:12px;line-height:1.8; }
-.instructions b { color:white; }
-footer { text-align:center;color:#777986;font-size:10px;padding:15px 0 25px;letter-spacing:1px; }
-@media(max-width:380px) {
-  .app { padding:9px; }
-  .panel { padding:11px; }
-  .action { min-height:63px;font-size:12px; }
+.hint{font-size:12px;line-height:1.7;color:#c8b8de;margin-top:15px}
+@media(min-width:650px){
+ .pad{grid-template-columns:repeat(3,58px);grid-template-rows:repeat(2,50px)}
+ .actions{grid-template-columns:repeat(3,65px);grid-template-rows:repeat(2,50px)}
+ .ctrl{font-size:13px}
+ .panel{padding:10px}
+ .name{font-size:13px}
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <header>
-    <div class="logo">DERIILNAY BOXING</div>
-    <div class="subtitle">CHAMPIONSHIP • FIGHT WITH HONOR</div>
-  </header>
+<div id="game">
+ <canvas id="arena"></canvas>
 
-  <section class="panel names">
-    <div class="field">
-      <label>🥊 PETINJU KAMU</label>
-      <input id="playerInput" maxlength="16" value="DERIILNAY" aria-label="Nama petinju kamu">
-    </div>
-    <div class="field">
-      <label>🏆 LAWAN CPU</label>
-      <input id="cpuInput" maxlength="16" value="CHAMPION" aria-label="Nama lawan">
-    </div>
-  </section>
+ <div class="hud">
+  <div class="panel">
+   <div class="name" id="playerNameHUD">HERO • RANA</div>
+   <div class="bar"><div class="fill" id="playerHP"></div></div>
+   <div class="energy"><div class="fill" id="playerEnergy"></div></div>
+  </div>
+  <div class="centerHud">
+   <div>FIGHT FOR RANA</div>
+   <div id="stageText">STAGE 1 / 3</div>
+  </div>
+  <div class="panel">
+   <div class="name" id="enemyName" style="text-align:right">SHADOW FIGHTER</div>
+   <div class="bar"><div class="fill" id="enemyHP"></div></div>
+   <div class="energy"><div class="fill" id="enemyEnergy"></div></div>
+  </div>
+ </div>
 
-  <section class="panel">
-    <div class="hud">
-      <div class="fighter-info">
-        <div class="fighter-name" id="playerName">DERIILNAY</div>
-        <div class="hp-track"><div class="hp-fill player-hp" id="playerBar"></div></div>
-        <div class="hp-number" id="playerHP">100 / 100 HP</div>
-      </div>
-      <div class="vs">VS</div>
-      <div class="fighter-info" style="text-align:right">
-        <div class="fighter-name" id="cpuName">CHAMPION</div>
-        <div class="hp-track"><div class="hp-fill cpu-hp" id="cpuBar"></div></div>
-        <div class="hp-number" id="cpuHP">100 / 100 HP</div>
-      </div>
-    </div>
+ <button id="pauseBtn" type="button" aria-label="Jeda">Ⅱ</button>
+ <div id="message"></div>
+ <div id="subtitle"></div>
+ <div id="toast"></div>
 
-    <div class="arena" id="arena">
-      <div class="spotlight"></div>
-      <div class="rope r1"></div>
-      <div class="rope r2"></div>
-      <div class="rope r3"></div>
-      <div class="ring-label">MAIN EVENT • ROUND 1</div>
-      <div class="timer" id="timer">60</div>
-      <div class="fighter left" id="playerFighter">
-        <svg viewBox="0 0 140 230" aria-label="Petinju merah">
-          <ellipse cx="70" cy="220" rx="43" ry="7" fill="#0005"/>
-          <path d="M48 154 L43 205 L31 218 L63 218 L72 169Z" fill="#d83b43" stroke="#7e1b28" stroke-width="3"/>
-          <path d="M83 154 L91 202 L83 216 L113 216 L111 202 L105 151Z" fill="#b92736" stroke="#7e1b28" stroke-width="3"/>
-          <path d="M45 100 Q70 82 96 102 L108 163 Q70 180 34 163Z" fill="#e6a16e" stroke="#713d2d" stroke-width="3"/>
-          <path d="M43 112 L28 149 L43 165 L58 137Z" fill="#e6a16e" stroke="#713d2d" stroke-width="3"/>
-          <path d="M95 110 L111 143 L100 158 L84 132Z" fill="#e6a16e" stroke="#713d2d" stroke-width="3"/>
-          <path d="M34 139 L20 133 L12 147 L21 164 L40 159Z" fill="#ff3448" stroke="#a40d25" stroke-width="3"/>
-          <path d="M99 137 L116 128 L132 139 L130 157 L109 161Z" fill="#ff3448" stroke="#a40d25" stroke-width="3"/>
-          <path d="M46 97 Q38 68 52 54 L88 54 Q104 72 95 100 L82 111 L56 110Z" fill="#e6a16e" stroke="#713d2d" stroke-width="3"/>
-          <path d="M47 76 Q32 37 69 31 Q104 33 96 75 L84 62 L57 64Z" fill="#22232a"/>
-          <path d="M53 80 L64 81 M79 81 L89 80" stroke="#26242a" stroke-width="4" stroke-linecap="round"/>
-          <path d="M64 95 Q72 100 80 94" fill="none" stroke="#7b3d30" stroke-width="3" stroke-linecap="round"/>
-          <path d="M46 108 L70 119 L96 107 L100 139 L72 151 L40 137Z" fill="#f3eee9" stroke="#9c2634" stroke-width="3"/>
-          <path d="M44 109 L31 124 L45 141 L60 125Z" fill="#e6a16e"/>
-          <path d="M94 109 L108 124 L95 141 L81 125Z" fill="#e6a16e"/>
-          <path d="M30 123 L18 118 L7 132 L13 149 L31 148 L41 136Z" fill="#ff3448" stroke="#a40d25" stroke-width="3"/>
-          <path d="M106 123 L120 116 L134 130 L130 147 L111 150 L100 136Z" fill="#ff3448" stroke="#a40d25" stroke-width="3"/>
-        </svg>
-      </div>
-      <div class="fighter right" id="cpuFighter">
-        <svg viewBox="0 0 140 230" aria-label="Petinju biru">
-          <ellipse cx="70" cy="220" rx="43" ry="7" fill="#0005"/>
-          <path d="M48 154 L43 205 L31 218 L63 218 L72 169Z" fill="#258ec4" stroke="#155a84" stroke-width="3"/>
-          <path d="M83 154 L91 202 L83 216 L113 216 L111 202 L105 151Z" fill="#1978aa" stroke="#155a84" stroke-width="3"/>
-          <path d="M45 100 Q70 82 96 102 L108 163 Q70 180 34 163Z" fill="#9a6649" stroke="#563522" stroke-width="3"/>
-          <path d="M43 112 L28 149 L43 165 L58 137Z" fill="#9a6649" stroke="#563522" stroke-width="3"/>
-          <path d="M95 110 L111 143 L100 158 L84 132Z" fill="#9a6649" stroke="#563522" stroke-width="3"/>
-          <path d="M34 139 L20 133 L12 147 L21 164 L40 159Z" fill="#32c8ff" stroke="#116b9a" stroke-width="3"/>
-          <path d="M99 137 L116 128 L132 139 L130 157 L109 161Z" fill="#32c8ff" stroke="#116b9a" stroke-width="3"/>
-          <path d="M46 97 Q38 68 52 54 L88 54 Q104 72 95 100 L82 111 L56 110Z" fill="#9a6649" stroke="#563522" stroke-width="3"/>
-          <path d="M44 72 Q37 39 70 32 Q104 35 97 72 L84 62 L56 64Z" fill="#181a22"/>
-          <path d="M53 80 L64 81 M79 81 L89 80" stroke="#17171b" stroke-width="4" stroke-linecap="round"/>
-          <path d="M64 95 Q72 100 80 94" fill="none" stroke="#492a22" stroke-width="3" stroke-linecap="round"/>
-          <path d="M46 108 L70 119 L96 107 L100 139 L72 151 L40 137Z" fill="#eeeef2" stroke="#155a84" stroke-width="3"/>
-          <path d="M44 109 L31 124 L45 141 L60 125Z" fill="#9a6649"/>
-          <path d="M94 109 L108 124 L95 141 L81 125Z" fill="#9a6649"/>
-          <path d="M30 123 L18 118 L7 132 L13 149 L31 148 L41 136Z" fill="#32c8ff" stroke="#116b9a" stroke-width="3"/>
-          <path d="M106 123 L120 116 L134 130 L130 147 L111 150 L100 136Z" fill="#32c8ff" stroke="#116b9a" stroke-width="3"/>
-        </svg>
-      </div>
-      <div id="flash"></div>
-      <div id="impact">POW!</div>
-      <div id="message">TEKAN MULAI PERTARUNGAN!</div>
-    </div>
+ <div class="controls">
+  <div class="pad">
+   <button class="ctrl blank" tabindex="-1"> </button>
+   <button class="ctrl" data-action="jump">▲ LOMPAT</button>
+   <button class="ctrl blank" tabindex="-1"> </button>
+   <button class="ctrl" data-action="left">◀</button>
+   <button class="ctrl" data-action="guard">▼</button>
+   <button class="ctrl" data-action="right">▶</button>
+  </div>
+  <div class="actions">
+   <button class="ctrl" data-action="punch">PUNCH</button>
+   <button class="ctrl" data-action="kick">KICK</button>
+   <button class="ctrl" data-action="dash">DASH</button>
+   <button class="ctrl special" data-action="ki">KI BLAST</button>
+   <button class="ctrl special" data-action="ultimate">ULTIMATE</button>
+   <button class="ctrl" data-action="guard">GUARD</button>
+  </div>
+ </div>
 
-    <div class="controls">
-      <button class="action red" id="jab">
-        <span class="emoji">👊</span>JAB
-        <small>Cepat • 7 DMG</small>
-      </button>
-      <button class="action gold" id="hook">
-        <span class="emoji">💥</span>HOOK
-        <small>Kuat • 13 DMG</small>
-      </button>
-      <button class="action red" id="upper">
-        <span class="emoji">🥊</span>UPPERCUT
-        <small>Super • 19 DMG</small>
-      </button>
-      <button class="action blue" id="block">
-        <span class="emoji">🛡️</span>BERTAHAN
-        <small>Kurangi damage</small>
-      </button>
-      <button class="action blue" id="dodge">
-        <span class="emoji">💨</span>MENGHINDAR
-        <small>Hindari serangan</small>
-      </button>
-      <button class="action gold" id="special">
-        <span class="emoji">⚡</span>POWER
-        <small id="powerLabel">Energi: 0%</small>
-      </button>
-    </div>
+ <!-- MENU UTAMA -->
+ <section class="overlay" id="startScreen">
+  <div class="card">
+   <div class="logo">FIGHT<br><span>FOR RANA</span></div>
+   <div class="tagline">
+    Tiga pertarungan. Satu misi istimewa.<br>
+    Pilih hero-mu dan berjuang sampai akhir!
+   </div>
 
-    <div class="status" id="status">Siap memasuki ring?</div>
+   <label class="field-label" for="heroName">✦ MASUKKAN NAMA HERO</label>
+   <input id="heroName" type="text" maxlength="20"
+     placeholder="Contoh: Naya" value="Naya" autocomplete="off">
 
-    <div class="game-buttons">
-      <button class="primary" id="start">▶ MULAI BERTARUNG</button>
-      <button class="secondary" id="reset">↻ MAIN ULANG</button>
-    </div>
-  </section>
+   <button class="primary" id="startBtn" type="button">
+    ▶ MULAI PERTARUNGAN
+   </button>
+   <button class="secondary" id="howBtn" type="button">CARA BERMAIN</button>
 
-  <section class="panel stats">
-    <div class="stat"><strong id="wins">0</strong><span>KEMENANGAN</span></div>
-    <div class="stat"><strong id="round">1</strong><span>RONDE</span></div>
-    <div class="stat"><strong id="accuracy">100%</strong><span>AKURASI</span></div>
-  </section>
+   <div class="hint">
+    3 STAGE • SPECIAL ATTACK • FINAL BOSS<br>
+    <span style="color:#ff9bd9;font-weight:bold">Dibuat dengan cinta oleh Naya ♥</span>
+   </div>
+  </div>
+ </section>
 
-  <section class="panel instructions">
-    <b>📖 CARA BERMAIN</b><br>
-    1. Masukkan nama petinju dan nama lawan.<br>
-    2. Tekan <b>MULAI BERTARUNG</b> untuk memulai.<br>
-    3. Gunakan Jab untuk menyerang cepat, Hook untuk pukulan kuat, dan Uppercut untuk damage besar.<br>
-    4. Gunakan Bertahan atau Menghindar untuk mengurangi risiko terkena pukulan.<br>
-    5. Isi energi dengan menyerang, lalu lepaskan <b>POWER</b> ketika energimu mencapai 100%.<br>
-    6. Kalahkan lawan sebelum waktu habis!
-  </section>
+ <!-- JEDA -->
+ <section class="overlay hidden" id="pauseScreen">
+  <div class="card">
+   <div class="logo" style="font-size:42px">PAUSED</div>
+   <p>Pertarungan dijeda.</p>
+   <button class="primary" id="resumeBtn">LANJUTKAN</button>
+   <button class="secondary" id="restartBtn">ULANG DARI AWAL</button>
+   <button class="secondary" id="homeBtn">MENU UTAMA</button>
+  </div>
+ </section>
 
-  <footer>CREATED BY DERIILNAY • BOXING GAME EDITION 1.0</footer>
+ <!-- HASIL STAGE -->
+ <section class="overlay hidden" id="resultScreen">
+  <div class="card">
+   <div class="logo" id="resultTitle" style="font-size:43px">VICTORY!</div>
+   <p id="resultText" class="tagline"></p>
+   <button class="primary" id="nextBtn">LANJUTKAN ▶</button>
+   <button class="secondary" id="againBtn">MAIN LAGI</button>
+  </div>
+ </section>
+
+ <!-- AKHIR ROMANTIS -->
+ <section class="overlay hidden" id="loveScreen">
+  <div class="card">
+   <div class="logo" style="font-size:42px">FOR <span>RANA ♥</span></div>
+   <p class="tagline">
+    Semua pertarungan ini bukan sekadar tentang kekuatan,
+    tetapi tentang keberanian untuk terus berjuang demi seseorang
+    yang berarti.
+   </p>
+   <p id="loveMessage" style="font-size:19px;color:#ffb8e5;font-weight:bold">
+    Rana, kamu layak mendapatkan yang terbaik. ♥
+   </p>
+   <div class="hint">MISI SELESAI • ENDING UNLOCKED</div>
+   <button class="primary" id="finalAgain">MAIN LAGI</button>
+   <button class="secondary" id="finalHome">MENU UTAMA</button>
+  </div>
+ </section>
 </div>
 
 <script>
-(() => {
-  "use strict";
+(function(){
+"use strict";
 
-  const $ = id => document.getElementById(id);
-  const playerInput = $("playerInput");
-  const cpuInput = $("cpuInput");
+const $=id=>document.getElementById(id);
+const canvas=$("arena");
+const ctx=canvas.getContext("2d");
 
-  let playerHP, cpuHP, timeLeft, running, wins, round;
-  let energy, blocking, dodging, attacks, hits, cpuTimer, clockTimer;
-  let busy = false;
-  let actionTimers = [];
+let W=0,H=0,raf=0,last=0;
+let running=false,paused=false,ended=false;
+let stage=0,shake=0,flash=0;
+let player=null,enemy=null;
+let particles=[],projectiles=[],stars=[],keys={};
+let audio=null,toastTimer=null;
 
-  const MAX_HP = 100;
+const stageNames=["SHADOW FIGHTER","CRIMSON WARRIOR","FINAL BOSS"];
+const stageHP=[100,150,210];
+const stageDamage=[7,11,15];
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const rand=(a,b)=>a+Math.random()*(b-a);
 
-  function init() {
-    clearTimers();
-    playerHP = MAX_HP;
-    cpuHP = MAX_HP;
-    timeLeft = 60;
-    running = false;
-    energy = 0;
-    blocking = false;
-    dodging = false;
-    attacks = 0;
-    hits = 0;
-    busy = false;
-    round = 1;
-    updateHUD();
-    $("timer").textContent = timeLeft;
-    $("message").textContent = "TEKAN MULAI PERTARUNGAN!";
-    $("status").textContent = "Siap memasuki ring?";
-    $("start").disabled = false;
-    $("start").textContent = "▶ MULAI BERTARUNG";
-    setActionsDisabled(true);
-    $("powerLabel").textContent = "Energi: 0%";
-    $("round").textContent = round;
-  }
+function resize(){
+ const dpr=Math.min(window.devicePixelRatio||1,2);
+ W=canvas.clientWidth||innerWidth;
+ H=canvas.clientHeight||innerHeight;
+ canvas.width=Math.round(W*dpr);
+ canvas.height=Math.round(H*dpr);
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ stars=Array.from({length:75},()=>({
+  x:Math.random()*W,y:Math.random()*H*.62,
+  r:rand(.5,1.8),a:rand(.2,.8)
+ }));
+ draw();
+}
+window.addEventListener("resize",resize);
 
-  function clearTimers() {
-    clearInterval(cpuTimer);
-    clearInterval(clockTimer);
-    actionTimers.forEach(clearTimeout);
-    actionTimers = [];
-  }
+function sound(freq=220,duration=.1,type="sawtooth",volume=.035){
+ try{
+  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
+  if(audio.state==="suspended")audio.resume();
+  const o=audio.createOscillator(),g=audio.createGain();
+  o.type=type;
+  o.frequency.setValueAtTime(freq,audio.currentTime);
+  o.frequency.exponentialRampToValueAtTime(
+   Math.max(45,freq*.55),audio.currentTime+duration
+  );
+  g.gain.setValueAtTime(volume,audio.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);
+  o.connect(g);g.connect(audio.destination);
+  o.start();o.stop(audio.currentTime+duration);
+ }catch(e){}
+}
 
-  function later(fn, delay) {
-    const t = setTimeout(fn, delay);
-    actionTimers.push(t);
-    return t;
-  }
+function toast(text){
+ $("toast").textContent=text;
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>$("toast").textContent="",1400);
+}
+function message(a="",b=""){
+ $("message").textContent=a;
+ $("subtitle").textContent=b;
+}
+function show(id){$(id).classList.remove("hidden")}
+function hide(id){$(id).classList.add("hidden")}
 
-  function setActionsDisabled(disabled) {
-    ["jab","hook","upper","block","dodge","special"].forEach(id => {
-      $(id).disabled = disabled;
-    });
-  }
+function createFighter(isPlayer){
+ return {
+  x:isPlayer?W*.25:W*.75,
+  y:floorY(),vx:0,vy:0,
+  hp:isPlayer?100:stageHP[stage],
+  maxHP:isPlayer?100:stageHP[stage],
+  energy:100,facing:isPlayer?1:-1,
+  grounded:true,attack:0,attackType:"punch",
+  cooldown:0,stun:0,guard:false,flash:0,
+  aiTimer:.3,isPlayer,alive:true
+ };
+}
 
-  function updateNames() {
-    $("playerName").textContent = playerInput.value.trim() || "PETINJU";
-    $("cpuName").textContent = cpuInput.value.trim() || "CHAMPION";
-  }
+function floorY(){return H*.72}
 
-  function updateHUD() {
-    updateNames();
-    $("playerBar").style.width = Math.max(0, playerHP) + "%";
-    $("cpuBar").style.width = Math.max(0, cpuHP) + "%";
-    $("playerHP").textContent = Math.max(0, playerHP) + " / 100 HP";
-    $("cpuHP").textContent = Math.max(0, cpuHP) + " / 100 HP";
-    $("powerLabel").textContent = "Energi: " + energy + "%";
-    $("accuracy").textContent = (attacks ? Math.round(hits / attacks * 100) : 100) + "%";
-  }
+function initStage(){
+ player=createFighter(true);
+ enemy=createFighter(false);
+ particles=[];projectiles=[];shake=0;flash=0;ended=false;
+ $("enemyName").textContent=stageNames[stage];
+ $("stageText").textContent="STAGE "+(stage+1)+" / 3";
+ const name=$("heroName").value.trim()||"Hero";
+ $("playerNameHUD").textContent=name.toUpperCase()+" • HERO";
+ $("loveMessage").textContent=name+", keberanianmu membuat cerita ini istimewa. ♥";
+ updateHUD();message();
+}
 
-  function animate(id, cls, duration=300) {
-    const el = $(id);
-    el.classList.remove(cls);
-    void el.offsetWidth;
-    el.classList.add(cls);
-    later(() => el.classList.remove(cls), duration);
-  }
+function updateHUD(){
+ if(!player||!enemy)return;
+ $("playerHP").style.width=clamp(player.hp/player.maxHP*100,0,100)+"%";
+ $("enemyHP").style.width=clamp(enemy.hp/enemy.maxHP*100,0,100)+"%";
+ $("playerEnergy").style.width=clamp(player.energy,0,100)+"%";
+ $("enemyEnergy").style.width=clamp(enemy.energy,0,100)+"%";
+}
 
-  function impact(text) {
-    $("impact").textContent = text;
-    $("impact").classList.remove("show");
-    void $("impact").offsetWidth;
-    $("impact").classList.add("show");
-    $("flash").classList.remove("show");
-    void $("flash").offsetWidth;
-    $("flash").classList.add("show");
-    animate("arena", "shake", 200);
-  }
-
-  function say(text) {
-    $("status").textContent = text;
-  }
-
-  function startGame() {
-    if (running) return;
-    init();
-    updateNames();
-    running = true;
-    setActionsDisabled(false);
-    $("start").disabled = true;
-    $("start").textContent = "🥊 PERTARUNGAN BERLANGSUNG";
-    $("message").textContent = "FIGHT!";
-    say("Pertarungan dimulai! Cari celah lawan.");
-
-    clockTimer = setInterval(() => {
-      if (!running) return;
-      timeLeft--;
-      $("timer").textContent = timeLeft;
-      if (timeLeft <= 0) endGame();
-    }, 1000);
-
-    cpuTimer = setInterval(cpuAttack, 1450);
-  }
-
-  function playerAttack(type) {
-    if (!running || busy) return;
-    blocking = false;
-    dodging = false;
-    attacks++;
-
-    const data = {
-      jab: {damage:7, cost:0, label:"JAB!", anim:"attack-left", accuracy:.92},
-      hook:{damage:13,cost:0,label:"HOOK!",anim:"attack-left",accuracy:.76},
-      upper:{damage:19,cost:0,label:"UPPERCUT!",anim:"attack-left",accuracy:.62},
-      special:{damage:30,cost:100,label:"POWER STRIKE!",anim:"attack-left",accuracy:.88}
-    }[type];
-
-    if (type === "special" && energy < 100) {
-      say("Energi belum penuh! Serang untuk mengisi POWER.");
-      return;
-    }
-
-    if (type === "special") energy = 0;
-
-    animate("playerFighter", data.anim, 260);
-    later(() => {
-      if (!running) return;
-      const landed = Math.random() < data.accuracy;
-      if (landed) {
-        const damage = data.damage + Math.floor(Math.random() * 4);
-        cpuHP = Math.max(0, cpuHP - damage);
-        hits++;
-        energy = Math.min(100, energy + (type === "special" ? 0 : 12));
-        impact(data.label);
-        $("message").textContent = data.label + " -" + damage + " HP";
-        say("Pukulan masuk! Lawan kehilangan " + damage + " HP.");
-      } else {
-        energy = Math.min(100, energy + 5);
-        $("message").textContent = "MISS!";
-        say("Pukulan meleset! Coba serangan lain.");
-      }
-      updateHUD();
-      if (cpuHP <= 0) endGame();
-    }, 120);
-  }
-
-  function cpuAttack() {
-    if (!running || busy) return;
-    const type = Math.random();
-    const damage = type < .6 ? 7 : type < .9 ? 12 : 17;
-
-    animate("cpuFighter", "attack-right", 300);
-    later(() => {
-      if (!running) return;
-      if (dodging) {
-        dodging = false;
-        $("message").textContent = "DODGE!";
-        say("Hebat! Kamu berhasil menghindari pukulan.");
-        energy = Math.min(100, energy + 8);
-        updateHUD();
-        return;
-      }
-
-      let actualDamage = damage;
-      if (blocking) actualDamage = Math.ceil(damage * .25);
-      playerHP = Math.max(0, playerHP - actualDamage);
-      impact(blocking ? "BLOCK!" : "POW!");
-      $("message").textContent = blocking ? "BLOCK! -" + actualDamage : "KENA! -" + actualDamage + " HP";
-      say(blocking ? "Pertahanan berhasil mengurangi damage!" : "Kamu terkena pukulan lawan!");
-      blocking = false;
-      updateHUD();
-      if (playerHP <= 0) endGame();
-    }, 160);
-  }
-
-  function defend() {
-    if (!running) return;
-    blocking = true;
-    dodging = false;
-    say("Posisi bertahan! Damage lawan akan berkurang.");
-    $("message").textContent = "GUARD UP!";
-    later(() => {
-      blocking = false;
-    }, 1100);
-  }
-
-  function dodge() {
-    if (!running) return;
-    dodging = true;
-    blocking = false;
-    animate("playerFighter", "dodge", 450);
-    say("Bersiap menghindar dari serangan lawan!");
-    $("message").textContent = "DODGE!";
-    later(() => {
-      dodging = false;
-    }, 1000);
-  }
-
-  function endGame() {
-    if (!running) return;
-    running = false;
-    clearInterval(cpuTimer);
-    clearInterval(clockTimer);
-    setActionsDisabled(true);
-    $("start").disabled = false;
-    $("start").textContent = "▶ MULAI LAGI";
-
-    if (playerHP > cpuHP) {
-      wins++;
-      $("wins").textContent = wins;
-      $("message").textContent = "🏆 YOU WIN!";
-      say("KEMENANGAN! " + (playerInput.value.trim() || "Petinju") + " adalah juara ring!");
-      impact("WIN!");
-    } else if (playerHP < cpuHP) {
-      $("message").textContent = "KNOCKOUT!";
-      say("Pertarungan selesai. Latihan lagi dan rebut gelar juara!");
-      impact("KO!");
-    } else {
-      $("message").textContent = "DRAW!";
-      say("Hasil seri! Kalian bertarung dengan seimbang.");
-    }
-    $("timer").textContent = timeLeft;
-  }
-
-  $("start").addEventListener("click", startGame);
-  $("reset").addEventListener("click", () => {
-    init();
-    say("Game direset. Tekan mulai untuk bertarung lagi.");
+function burst(x,y,color,count=12,power=4){
+ for(let i=0;i<count;i++){
+  const a=Math.random()*Math.PI*2,s=rand(1,power);
+  particles.push({
+   x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,
+   life:rand(.25,.65),max:.65,r:rand(2,5),color
   });
+ }
+}
 
-  $("jab").addEventListener("click", () => playerAttack("jab"));
-  $("hook").addEventListener("click", () => playerAttack("hook"));
-  $("upper").addEventListener("click", () => playerAttack("upper"));
-  $("special").addEventListener("click", () => playerAttack("special"));
-  $("block").addEventListener("click", defend);
-  $("dodge").addEventListener("click", dodge);
+function hit(target,damage,kind="punch"){
+ if(!target.alive)return;
+ if(target.guard&&target.isPlayer){
+  damage*=.2;toast("GUARD BERHASIL!");
+ }
+ target.hp=Math.max(0,target.hp-damage);
+ target.flash=.15;target.stun=.15;
+ target.vx+=(target===enemy?1:-1)*2.5;
+ shake=5;flash=.05;
+ burst(target.x,target.y-55,kind==="ki"?"#70f5ff":"#ff71d0",13,5);
+ sound(kind==="ki"?520:135,.11,kind==="ki"?"triangle":"sawtooth",.04);
+ updateHUD();
+ if(target.hp<=0){
+  target.alive=false;
+  if(target===enemy)winStage();
+  else loseGame();
+ }
+}
 
-  playerInput.addEventListener("input", updateNames);
-  cpuInput.addEventListener("input", updateNames);
+function winStage(){
+ if(ended)return;
+ ended=true;running=false;
+ sound(740,.25,"triangle",.05);
+ setTimeout(()=>{
+  if(stage<2){
+   $("resultTitle").textContent="VICTORY!";
+   $("resultText").textContent=
+    "Stage "+(stage+1)+" selesai! Tantangan berikutnya lebih kuat.";
+   $("nextBtn").textContent="STAGE BERIKUTNYA ▶";
+   show("resultScreen");
+  }else{
+   show("loveScreen");
+  }
+ },350);
+}
 
-  document.addEventListener("keydown", e => {
-    if (e.repeat) return;
-    if (e.key === "1") playerAttack("jab");
-    if (e.key === "2") playerAttack("hook");
-    if (e.key === "3") playerAttack("upper");
-    if (e.key.toLowerCase() === "b") defend();
-    if (e.key.toLowerCase() === "d") dodge();
-    if (e.key.toLowerCase() === "p") playerAttack("special");
+function loseGame(){
+ if(ended)return;
+ ended=true;running=false;
+ $("resultTitle").textContent="TRY AGAIN";
+ $("resultText").textContent=
+  "Seorang hero tidak menyerah. Coba lagi dan selesaikan misimu!";
+ $("nextBtn").textContent="COBA LAGI";
+ show("resultScreen");
+}
+
+function projectile(f,ultimate){
+ projectiles.push({
+  x:f.x+f.facing*35,y:f.y-55,
+  vx:f.facing*(ultimate?10:7),life:1.2,
+  damage:ultimate?34:15,
+  ultimate,fromPlayer:f.isPlayer
+ });
+ burst(f.x+f.facing*30,f.y-55,
+  ultimate?"#fff0a0":"#65f5ff",12,4);
+ toast(ultimate?"ULTIMATE KI BLAST!":"KI BLAST!");
+ sound(ultimate?680:450,.18,"triangle",.05);
+}
+
+function action(a){
+ if(!running||paused||ended||!player||!player.alive)return;
+ const p=player;
+
+ if(a==="left"){p.vx=-3.5;p.facing=-1;return}
+ if(a==="right"){p.vx=3.5;p.facing=1;return}
+ if(a==="guard"){p.guard=true;return}
+ if(a==="jump"&&p.grounded){
+  p.vy=-10;p.grounded=false;sound(280,.08,"triangle");return;
+ }
+ if(a==="dash"){
+  p.vx=p.facing*8;
+  burst(p.x,p.y-30,"#70edff",8,3);
+  sound(350,.1,"triangle");return;
+ }
+ if(a==="ki"||a==="ultimate"){
+  const cost=a==="ultimate"?45:18;
+  if(p.energy<cost){toast("ENERGI BELUM CUKUP!");return}
+  p.energy-=cost;projectile(p,a==="ultimate");updateHUD();return;
+ }
+ if((a==="punch"||a==="kick")&&p.cooldown<=0){
+  p.attack=.2;p.attackType=a;
+  p.cooldown=a==="kick"?.42:.3;
+  sound(a==="kick"?190:155,.08);
+  if(Math.abs(enemy.x-p.x)<(a==="kick"?115:88)&&
+     Math.abs(enemy.y-p.y)<80){
+   hit(enemy,a==="kick"?14:9,a);
+   p.energy=Math.min(100,p.energy+7);updateHUD();
+  }else{
+   burst(p.x+p.facing*38,p.y-52,"#f3c8ff",4,2);
+  }
+ }
+}
+
+function update(dt){
+ if(!running||paused)return;
+ const p=player,e=enemy,fy=floorY();
+ p.cooldown=Math.max(0,p.cooldown-dt);
+ e.cooldown=Math.max(0,e.cooldown-dt);
+ p.attack=Math.max(0,p.attack-dt);
+ e.attack=Math.max(0,e.attack-dt);
+ p.flash=Math.max(0,p.flash-dt);
+ e.flash=Math.max(0,e.flash-dt);
+ p.stun=Math.max(0,p.stun-dt);
+ p.energy=Math.min(100,p.energy+dt*3);
+ e.energy=Math.min(100,e.energy+dt*2);
+ p.guard=!!keys.guard;
+
+ if(!p.stun){
+  if(keys.left){p.vx=-3.5;p.facing=-1}
+  else if(keys.right){p.vx=3.5;p.facing=1}
+  else p.vx*=Math.pow(.04,dt);
+ }
+ e.facing=e.x>p.x?-1:1;
+ e.aiTimer-=dt;
+ if(e.aiTimer<=0){
+  e.aiTimer=rand(.25,.55);
+  const dist=Math.abs(e.x-p.x);
+  if(dist>85)e.vx=e.facing*rand(1.1,2.5);
+  else{
+   e.vx=rand(-.5,.5);
+   if(e.cooldown<=0&&Math.random()<.7){
+    if(stage===2&&e.energy>=40&&Math.random()<.25){
+     e.energy-=40;projectile(e,true);
+    }else{
+     e.attack=.2;
+     e.attackType=Math.random()<.5?"punch":"kick";
+     e.cooldown=rand(.5,.85);
+     if(dist<105&&Math.abs(e.y-p.y)<80){
+      hit(p,stageDamage[stage]+rand(0,3),"punch");
+     }
+    }
+   }
+  }
+ }
+ for(const f of [p,e]){
+  f.x=clamp(f.x+f.vx,28,W-28);
+  f.y+=f.vy;f.vy+=26*dt;
+  if(f.y>=fy){f.y=fy;f.vy=0;f.grounded=true}
+  else f.grounded=false;
+ }
+ for(let i=projectiles.length-1;i>=0;i--){
+  const q=projectiles[i];q.x+=q.vx;q.life-=dt;
+  const target=q.fromPlayer?e:p;
+  if(Math.abs(q.x-target.x)<32&&Math.abs(q.y-(target.y-55))<65){
+   hit(target,q.damage,"ki");
+   projectiles.splice(i,1);continue;
+  }
+  if(q.life<=0||q.x<-60||q.x>W+60)projectiles.splice(i,1);
+ }
+ for(let i=particles.length-1;i>=0;i--){
+  const a=particles[i];a.x+=a.vx;a.y+=a.vy;
+  a.vy+=10*dt;a.life-=dt;
+  if(a.life<=0)particles.splice(i,1);
+ }
+ shake=Math.max(0,shake-dt*25);
+ flash=Math.max(0,flash-dt);
+ updateHUD();
+}
+
+function drawFighter(f){
+ const x=f.x,y=f.y,face=f.facing;
+ const main=f.isPlayer?"#36dfff":"#ff4c83";
+ const dark=f.isPlayer?"#164b91":"#761642";
+ ctx.save();ctx.translate(x,y);ctx.scale(face,1);
+ if(f.flash>0){ctx.shadowColor="#fff";ctx.shadowBlur=25}
+ // aura
+ ctx.globalAlpha=.12+Math.sin(performance.now()*.012)*.06;
+ ctx.fillStyle=main;
+ ctx.beginPath();ctx.ellipse(0,-48,29,55,0,0,Math.PI*2);ctx.fill();
+ ctx.globalAlpha=1;
+ // legs
+ ctx.lineCap="round";ctx.lineWidth=13;ctx.strokeStyle=dark;
+ ctx.beginPath();ctx.moveTo(-7,-25);ctx.lineTo(-13,-6);ctx.lineTo(-18,0);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(7,-25);ctx.lineTo(14,-8);ctx.lineTo(20,0);ctx.stroke();
+ // body
+ ctx.fillStyle=dark;ctx.fillRect(-15,-66,30,39);
+ ctx.fillStyle=main;ctx.fillRect(-11,-62,22,31);
+ // head
+ ctx.fillStyle="#ffd2bd";ctx.beginPath();ctx.arc(0,-78,13,0,Math.PI*2);ctx.fill();
+ // anime hair
+ ctx.fillStyle=f.isPlayer?"#b8faff":"#ffbd6b";
+ ctx.beginPath();ctx.moveTo(-13,-79);ctx.lineTo(-17,-94);
+ ctx.lineTo(-5,-87);ctx.lineTo(0,-101);ctx.lineTo(5,-87);
+ ctx.lineTo(17,-94);ctx.lineTo(12,-76);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#171126";ctx.fillRect(4,-81,5,3);
+ // arms
+ ctx.strokeStyle="#ffd2bd";ctx.lineWidth=9;
+ ctx.beginPath();ctx.moveTo(-10,-57);ctx.lineTo(-17,-44);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(10,-57);
+ ctx.lineTo(f.attack>0?34:17,f.attack>0?-48:-43);ctx.stroke();
+ ctx.fillStyle=main;ctx.beginPath();
+ ctx.arc(f.attack>0?34:18,f.attack>0?-48:-43,7,0,Math.PI*2);ctx.fill();
+ if(f.guard){
+  ctx.strokeStyle="#7df8ff";ctx.lineWidth=3;
+  ctx.shadowColor="#7df8ff";ctx.shadowBlur=15;
+  ctx.beginPath();ctx.arc(13,-53,29,-1.5,1.5);ctx.stroke();
+ }
+ ctx.restore();
+}
+
+function draw(){
+ if(!ctx||!W||!H)return;
+ ctx.save();
+ if(shake>0)ctx.translate(rand(-shake,shake),rand(-shake,shake));
+ const sky=ctx.createLinearGradient(0,0,0,H);
+ sky.addColorStop(0,"#090b28");sky.addColorStop(.55,"#30154a");sky.addColorStop(1,"#100b25");
+ ctx.fillStyle=sky;ctx.fillRect(-20,-20,W+40,H+40);
+ stars.forEach(s=>{
+  ctx.globalAlpha=s.a;ctx.fillStyle="#e8eaff";ctx.fillRect(s.x,s.y,s.r,s.r);
+ });
+ ctx.globalAlpha=1;
+ // moon
+ ctx.fillStyle="#b6eaff";ctx.globalAlpha=.15;
+ ctx.beginPath();ctx.arc(W*.78,H*.18,45,0,Math.PI*2);ctx.fill();
+ ctx.globalAlpha=1;
+ const fy=floorY();
+ // skyline
+ for(let i=0;i<20;i++){
+  const bw=30+(i*17%35),bh=40+(i*29%105),bx=i*W/18;
+  ctx.fillStyle=i%2?"#171338":"#21153d";
+  ctx.fillRect(bx,fy-bh,bw,bh);
+  ctx.fillStyle="#7865a8";ctx.globalAlpha=.3;
+  for(let wy=fy-bh+10;wy<fy-8;wy+=15)
+   for(let wx=bx+7;wx<bx+bw-5;wx+=12)ctx.fillRect(wx,wy,4,5);
+ }
+ ctx.globalAlpha=1;
+ ctx.fillStyle="#16102b";ctx.fillRect(0,fy,W,H-fy);
+ ctx.strokeStyle="#a64fff";ctx.lineWidth=2;
+ ctx.beginPath();ctx.moveTo(0,fy);ctx.lineTo(W,fy);ctx.stroke();
+ for(let i=0;i<10;i++){
+  ctx.strokeStyle="#6e39a0";ctx.globalAlpha=.3;
+  ctx.beginPath();ctx.moveTo(W/2,fy);ctx.lineTo(i*W/9,H);ctx.stroke();
+ }
+ ctx.globalAlpha=1;
+ if(player&&enemy){
+  [player,enemy].forEach(f=>{
+   ctx.fillStyle="#03030a88";ctx.beginPath();
+   ctx.ellipse(f.x,fy-2,25,6,0,0,Math.PI*2);ctx.fill();
   });
+  drawFighter(enemy);drawFighter(player);
+ }
+ projectiles.forEach(q=>{
+  ctx.save();ctx.shadowColor=q.ultimate?"#fff0a0":"#60f6ff";
+  ctx.shadowBlur=q.ultimate?30:20;
+  ctx.fillStyle=q.ultimate?"#fff4a7":"#7df8ff";
+  ctx.beginPath();ctx.ellipse(q.x,q.y,q.ultimate?24:14,q.ultimate?12:8,0,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+ });
+ particles.forEach(a=>{
+  ctx.globalAlpha=clamp(a.life/a.max,0,1);
+  ctx.fillStyle=a.color;ctx.beginPath();
+  ctx.arc(a.x,a.y,a.r,0,Math.PI*2);ctx.fill();
+ });
+ ctx.globalAlpha=1;
+ if(flash>0){ctx.fillStyle="#fff";ctx.globalAlpha=flash*2;ctx.fillRect(0,0,W,H);ctx.globalAlpha=1}
+ ctx.restore();
+}
 
-  init();
+function loop(t){
+ const dt=Math.min(.033,Math.max(0,(t-last)/1000));
+ last=t;update(dt);draw();
+ if(running&&!paused)raf=requestAnimationFrame(loop);
+}
+function startGame(){
+ sound(520,.12,"triangle",.05);
+ stage=0;running=true;paused=false;ended=false;
+ hide("startScreen");hide("pauseScreen");hide("resultScreen");hide("loveScreen");
+ initStage();last=performance.now();
+ cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
+ toast("FIGHT! TUNJUKKAN KEBERANIANMU!");
+}
+function nextStage(){
+ hide("resultScreen");
+ if($("resultTitle").textContent==="TRY AGAIN"){startGame();return}
+ stage=Math.min(2,stage+1);running=true;paused=false;initStage();
+ last=performance.now();cancelAnimationFrame(raf);
+ raf=requestAnimationFrame(loop);toast("STAGE "+(stage+1)+" — FIGHT!");
+}
+function pauseGame(){
+ if(!running||ended)return;
+ running=false;paused=true;show("pauseScreen");
+}
+function resumeGame(){
+ hide("pauseScreen");paused=false;running=true;
+ last=performance.now();cancelAnimationFrame(raf);
+ raf=requestAnimationFrame(loop);
+}
+function restartGame(){
+ hide("resultScreen");hide("pauseScreen");hide("loveScreen");startGame();
+}
+function home(){
+ running=false;paused=false;ended=false;cancelAnimationFrame(raf);
+ hide("pauseScreen");hide("resultScreen");hide("loveScreen");
+ show("startScreen");hide("message");hide("subtitle");draw();
+}
+
+// Semua tombol menu menggunakan event listener.
+$("startBtn").addEventListener("click",startGame);
+$("howBtn").addEventListener("click",()=>{
+ alert("CARA BERMAIN\n\n◀ / ▶ : Bergerak\n▲ LOMPAT : Melompat\nPUNCH : Pukulan\nKICK : Tendangan\nGUARD : Bertahan\nKI BLAST : Serangan energi\nULTIMATE : Serangan kuat (45 energi)\nDASH : Bergerak cepat\n\nKalahkan tiga musuh untuk membuka ending romantis!");
+});
+$("pauseBtn").addEventListener("click",()=>paused?resumeGame():pauseGame());
+$("resumeBtn").addEventListener("click",resumeGame);
+$("restartBtn").addEventListener("click",restartGame);
+$("homeBtn").addEventListener("click",home);
+$("nextBtn").addEventListener("click",nextStage);
+$("againBtn").addEventListener("click",restartGame);
+$("finalAgain").addEventListener("click",restartGame);
+$("finalHome").addEventListener("click",home);
+
+// Kontrol sentuh: gerakan tetap aktif selama tombol ditahan.
+document.querySelectorAll("[data-action]").forEach(btn=>{
+ const a=btn.dataset.action;
+ function down(e){
+  e.preventDefault();
+  try{btn.setPointerCapture(e.pointerId)}catch(err){}
+  keys[a]=true;action(a);btn.classList.add("active");
+ }
+ function up(e){
+  if(e)e.preventDefault();
+  keys[a]=false;btn.classList.remove("active");
+  if(a==="guard"&&player)player.guard=false;
+ }
+ btn.addEventListener("pointerdown",down);
+ btn.addEventListener("pointerup",up);
+ btn.addEventListener("pointercancel",up);
+ btn.addEventListener("lostpointercapture",up);
+});
+const keyMap={
+ ArrowLeft:"left",ArrowRight:"right",ArrowUp:"jump",ArrowDown:"guard",
+ a:"left",d:"right",w:"jump",j:"punch",k:"kick",l:"ki",u:"ultimate",g:"guard"
+};
+window.addEventListener("keydown",e=>{
+ const a=keyMap[e.key]||keyMap[e.key.toLowerCase()];
+ if(a){e.preventDefault();keys[a]=true;action(a)}
+ if(e.key==="Escape"){paused?resumeGame():pauseGame()}
+});
+window.addEventListener("keyup",e=>{
+ const a=keyMap[e.key]||keyMap[e.key.toLowerCase()];
+ if(a){keys[a]=false;if(a==="guard"&&player)player.guard=false}
+});
+document.addEventListener("visibilitychange",()=>{
+ if(document.hidden&&running)pauseGame();
+});
+
+// Inisialisasi menu agar tombol mulai selalu terlihat.
+resize();
+player=createFighter(true);enemy=createFighter(false);
+show("startScreen");
+draw();
 })();
 </script>
 </body>
 </html>
-
